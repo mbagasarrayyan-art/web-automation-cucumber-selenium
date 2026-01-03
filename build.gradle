@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.bagas'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+dependencies {
+    // ===== CUCUMBER =====
+    testImplementation 'io.cucumber:cucumber-java:7.18.1'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.18.1'
+
+    // ===== JUNIT PLATFORM SUITE (buat @Suite runner) =====
+    testImplementation 'org.junit.platform:junit-platform-suite:1.10.2'
+
+    // ===== SELENIUM =====
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.23.0'
+
+    // ===== WEBDRIVER MANAGER =====
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.9.2'
+
+    // ===== ASSERTJ =====
+    testImplementation 'org.assertj:assertj-core:3.26.3'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+
+
+
+
