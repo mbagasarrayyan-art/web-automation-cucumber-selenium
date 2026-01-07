@@ -1,0 +1,39 @@
+name: Web UI Tests (Cucumber + Selenium)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - name: Run Web Automation Tests
+        run: ./gradlew clean test
+
+      - name: Upload Cucumber Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-cucumber-report
+          path: build/reports/cucumber.*
+
+      - name: Upload Gradle Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-gradle-report
+          path: build/reports/tests/test
