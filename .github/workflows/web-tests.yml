@@ -5,16 +5,17 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Java 21 (Temurin)
+      - name: Set up Java 21 (Temurin)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -22,19 +23,12 @@ jobs:
           cache: gradle
 
       - name: Make Gradle wrapper executable
-        run: chmod +x ./gradlew
-
-      # (Opsional tapi aman) install lib yang kadang dibutuhkan chrome headless
-      - name: Install dependencies for Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libnss3 libgconf-2-4 libxi6 libgbm1
+        run: chmod +x gradlew
 
       - name: Run Web UI tests
         run: ./gradlew clean test
 
-      # Upload Cucumber report (kalau file ada)
-      - name: Upload Cucumber Report
+      - name: Upload Cucumber report
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -42,24 +36,11 @@ jobs:
           path: |
             build/reports/cucumber.html
             build/reports/cucumber.json
-          if-no-files-found: warn
 
-      # Upload Gradle test report (pasti ada kalau test jalan)
-      - name: Upload Gradle Test Report
+      - name: Upload Gradle test report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: gradle-test-report
           path: build/reports/tests/test
-          if-no-files-found: warn
 
-      # Upload logs kalau kamu pakai allure-results / screenshot (opsional)
-      - name: Upload Extra Test Outputs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-outputs
-          path: |
-            build/reports/problems
-            build/test-results
-          if-no-files-found: warn
